@@ -1,10 +1,16 @@
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function fetchHealth() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
-  const res = await fetch(`${baseUrl}/api/health`, { cache: 'no-store' });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001';
+    const res = await fetch(`${baseUrl}/api/health`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
 }
 
 export default async function HomePage() {
