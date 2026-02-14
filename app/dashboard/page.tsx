@@ -1,8 +1,8 @@
-export const dynamic = 'force-dynamic';
-
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { DashboardHeader } from './components/DashboardHeader';
+import { ClientActivationPanel } from './components/ClientActivationPanel';
+import { BillingActivationCard } from './components/BillingActivationCard';
 import { NeedsAttentionBanner } from './components/NeedsAttentionBanner';
 import { IntegrationStatus } from './components/IntegrationStatus';
 import { AutomationMetrics } from './components/AutomationMetrics';
@@ -173,7 +173,14 @@ async function getClientData() {
   }
 }
 
-export default async function DashboardPage() {
+interface DashboardPageProps {
+  searchParams?: Promise<{ launch?: string; billing?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const params = (await searchParams) || {};
+  const launchConcierge = params.launch === 'concierge';
+  const billingState = params.billing === 'success' || params.billing === 'canceled' ? params.billing : null;
   const { client, reports, agentRuns, integrations, ghlMetrics, ghlActivity, ghlHealthy } = await getClientData();
 
   const logoDevToken =
@@ -307,6 +314,19 @@ export default async function DashboardPage() {
           summaryLine={summaryLine} 
           gridHealthy={!hasFailures} 
           storyBeat={storyHighlight}
+        />
+
+        <ClientActivationPanel
+          businessName={client.business_name}
+          onboardingChecklist={(client as { onboarding_checklist?: Record<string, boolean> }).onboarding_checklist}
+          launchConcierge={launchConcierge}
+        />
+
+        <BillingActivationCard
+          clientId={client.client_id}
+          clientStatus={client.status || 'pending'}
+          mrrCents={client.mrr_cents || 0}
+          billingState={billingState}
         />
         
         <NeedsAttentionBanner 

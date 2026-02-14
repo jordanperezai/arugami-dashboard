@@ -10,6 +10,18 @@ Think of it as **mission control for your AI-powered business operations**.
 
 ## Dashboard Layout
 
+Before the main analytics blocks, the dashboard now shows a **Client Activation + AI Concierge panel**:
+- activation milestone progress (payment/GHL/site/first automation)
+- clear "A2P/EIN can continue in parallel" messaging
+- one-tap launchers for WhatsApp/SMS/Email to start AI operator chat immediately
+
+This panel is intentionally conversion-focused for new clients arriving from `/welcome` and `/onboarding`.
+
+Immediately below that, the dashboard now shows a **Billing Activation card**:
+- unpaid clients see a direct **Pay Invoice** CTA (Stripe Checkout launch)
+- paid clients see **Billing Active** confirmation
+- handles return states (`billing=success` / `billing=canceled`) after checkout
+
 The dashboard is organized into **8 sections** across 4 rows:
 
 ### Header

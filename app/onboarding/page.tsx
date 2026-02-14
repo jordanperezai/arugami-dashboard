@@ -3380,7 +3380,7 @@ function OnboardingContent() {
             transition={{ delay: 2 }}
             whileHover={{ scale: 1.02, boxShadow: `0 0 40px ${BRAND.amber}40` }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/dashboard?launch=concierge')}
             style={{
               width: '100%',
               padding: '18px 24px',
@@ -3401,6 +3401,18 @@ function OnboardingContent() {
             Enter Your Dashboard
             <ArrowRight size={18} />
           </motion.button>
+
+          <p
+            style={{
+              marginTop: 10,
+              marginBottom: 0,
+              color: BRAND.concrete,
+              fontSize: 12,
+              textAlign: 'center',
+            }}
+          >
+            A2P and EIN steps can be finalized while the grid is already running.
+          </p>
 
           {/* White-glove help option */}
           <motion.div

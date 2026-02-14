@@ -170,7 +170,7 @@ function PaymentStep({ clientId, token, onComplete }: PaymentStepProps) {
             lineHeight: 1.6,
           }}
         >
-          Your AI is ready to start learning your business.
+          Your AI is ready to start learning your business today.
         </p>
       </motion.div>
 
@@ -302,6 +302,9 @@ function PaymentStep({ clientId, token, onComplete }: PaymentStepProps) {
         <p style={{ fontSize: 12, color: BRAND.concrete, margin: 0, lineHeight: 1.5 }}>
           You&apos;ll be redirected to Stripe&apos;s secure payment page.<br />
           Apple Pay, Google Pay, and all major cards accepted.
+        </p>
+        <p style={{ fontSize: 11, color: BRAND.concrete, margin: '10px 0 0', lineHeight: 1.45 }}>
+          A2P and EIN setup can continue in parallel after activation.
         </p>
       </motion.div>
 
@@ -2120,7 +2123,7 @@ function WelcomeFlowContent() {
 
                   console.log('Account created:', { ...data, priority: selectedPriority });
                   // Redirect to dashboard on success
-                  router.push('/dashboard');
+                  router.push('/dashboard?launch=concierge');
                 }}
               />
             )}

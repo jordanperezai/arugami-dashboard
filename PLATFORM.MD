@@ -1,7 +1,7 @@
 # arugami Dashboard — Platform Map
 *Traceable “what exists” map for the client-facing product.*
 
-**LastSynced:** 2025-12-22  
+**LastSynced:** 2026-02-14  
 **Scope:** `apps/arugami-dashboard`
 
 ---
@@ -33,10 +33,17 @@ Update this file when you change:
   - `apps/arugami-dashboard/app/api/oauth/[provider]/authorize/route.ts`
   - `apps/arugami-dashboard/app/api/oauth/[provider]/callback/route.ts`
 
+### `/welcome`
+- Owner code: `apps/arugami-dashboard/app/welcome/page.tsx`
+- Flow: payment -> reveal -> priorities -> password -> dashboard handoff
+- Handoff behavior: routes to `/dashboard?launch=concierge` to spotlight AI concierge actions on first load
+
 ### `/dashboard`
 - Owner code: `apps/arugami-dashboard/app/dashboard/page.tsx`
 - Components:
   - `apps/arugami-dashboard/app/dashboard/components/*`
+  - `apps/arugami-dashboard/app/dashboard/components/ClientActivationPanel.tsx` (activation status + AI concierge launcher)
+  - `apps/arugami-dashboard/app/dashboard/components/BillingActivationCard.tsx` (in-dashboard invoice/payment CTA + paid/canceled states)
 - Auth gate:
   - `apps/arugami-dashboard/middleware.ts`
 
@@ -63,3 +70,7 @@ Update this file when you change:
 - `agent_runs`
 - `reports`
 
+### Stripe billing from dashboard
+- API route: `apps/arugami-dashboard/app/api/stripe/create-dashboard-checkout/route.ts`
+- Behavior: authenticated client can launch Stripe Checkout from dashboard without welcome token
+- Return paths: `/dashboard?billing=success&launch=concierge` or `/dashboard?billing=canceled`
