@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { stripe } from '@/lib/stripe';
-import { getSupabaseServiceClient } from '@zordon/database';
+import { getSupabaseServiceClient } from '@/utils/supabase';
 
 export async function POST(request: Request) {
   try {
