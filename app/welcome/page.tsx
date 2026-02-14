@@ -1865,7 +1865,15 @@ function LoadingState() {
 // ============================================
 // ERROR STATE
 // ============================================
-function ErrorState({ message }: { message: string }) {
+function ErrorState({
+  message,
+  title = 'Invalid Link',
+  actions,
+}: {
+  message: string;
+  title?: string;
+  actions?: Array<{ href: string; label: string }>;
+}) {
   return (
     <div
       style={{
@@ -1902,17 +1910,65 @@ function ErrorState({ message }: { message: string }) {
         >
           <Shield size={32} style={{ color: BRAND.red }} />
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'white', margin: 0, marginBottom: 12 }}>
-          Invalid Link
-        </h1>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: 'white', margin: 0, marginBottom: 12 }}>{title}</h1>
         <p style={{ fontSize: 15, color: BRAND.concrete, margin: 0, lineHeight: 1.6 }}>
           {message}
         </p>
+        {actions && actions.length > 0 && (
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 20, flexWrap: 'wrap' }}>
+            {actions.map((action) => (
+              <a
+                key={action.href}
+                href={action.href}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  border: `1px solid ${BRAND.teal}${OPACITY.medium}`,
+                  color: BRAND.teal,
+                  textDecoration: 'none',
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                {action.label}
+              </a>
+            ))}
+          </div>
+        )}
         <p style={{ fontSize: 13, color: BRAND.concrete, margin: '20px 0 0', opacity: 0.7 }}>
           If you believe this is an error, please contact support.
         </p>
       </div>
     </div>
+  );
+}
+
+function MissingTokenState() {
+  return (
+    <ErrorState
+      title="Welcome Link Required"
+      message="Use the secure welcome link we sent you, or sign in to continue."
+      actions={[
+        { href: '/login', label: 'Sign In' },
+        { href: '/onboarding', label: 'Start Onboarding' },
+      ]}
+    />
+  );
+}
+
+function AlreadyOnboardedState({ businessName }: { businessName: string }) {
+  return (
+    <ErrorState
+      title={`${businessName} Is Already Set Up`}
+      message="Your account is already active. Sign in to open your dashboard and continue setup from there."
+      actions={[
+        { href: '/login', label: 'Sign In' },
+        { href: '/dashboard', label: 'Open Dashboard' },
+      ]}
+    />
   );
 }
 
@@ -1929,6 +1985,8 @@ function WelcomeFlowContent() {
   const [step, setStep] = useState<Step>('payment');
   const [isLoading, setIsLoading] = useState(true);
   const [tokenError, setTokenError] = useState<string | null>(null);
+  const [alreadyOnboarded, setAlreadyOnboarded] = useState(false);
+  const [isMissingToken, setIsMissingToken] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState<string>('Your Business');
   const [selectedPriority, setSelectedPriority] = useState<Priority | null>(null);
@@ -1938,7 +1996,7 @@ function WelcomeFlowContent() {
   useEffect(() => {
     async function verifyToken() {
       if (!token) {
-        setTokenError('No welcome token provided. Please use the link sent to your phone.');
+        setIsMissingToken(true);
         setIsLoading(false);
         return;
       }
@@ -1953,6 +2011,7 @@ function WelcomeFlowContent() {
           return;
         }
 
+        setAlreadyOnboarded(Boolean(data.alreadyOnboarded));
         setClientId(data.clientId);
         setBusinessName(data.businessName || 'Your Business');
 
@@ -1976,6 +2035,14 @@ function WelcomeFlowContent() {
   // Show loading state
   if (isLoading) {
     return <LoadingState />;
+  }
+
+  if (isMissingToken) {
+    return <MissingTokenState />;
+  }
+
+  if (alreadyOnboarded) {
+    return <AlreadyOnboardedState businessName={businessName} />;
   }
 
   // Show error state if token is invalid

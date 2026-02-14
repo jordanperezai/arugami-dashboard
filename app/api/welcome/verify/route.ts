@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseServiceClient } from '@/utils/supabase';
+import { getSupabaseServiceClient } from '@zordon/database';
 import { verifyWelcomeToken } from '@/lib/welcome-token';
 
 /**
@@ -57,10 +57,12 @@ export async function GET(request: Request) {
       .single();
 
     if (existingUser) {
-      return NextResponse.json(
-        { isValid: false, error: 'An account has already been created for this business' },
-        { status: 409 }
-      );
+      return NextResponse.json({
+        isValid: true,
+        alreadyOnboarded: true,
+        clientId: client.client_id,
+        businessName: client.business_name || tokenBusinessName || 'Your Business',
+      });
     }
 
     return NextResponse.json({
